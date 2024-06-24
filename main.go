@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -8,10 +9,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+	"github.com/stonoy/Exam-App/internal/database"
 )
 
 type apiConfig struct {
-	hits int
+	hits       int
+	Jwt_Secret string
+	DB         *database.Queries
 }
 
 func main() {
@@ -27,9 +32,31 @@ func main() {
 		log.Fatal("PORT is not assigned")
 	}
 
+	// the jwt secret
+	jwt_secret := os.Getenv("JWT_SECRET")
+	if jwt_secret == "" {
+		log.Println("Jwt secret not provided")
+	}
+
 	// initiate apiConfig
 	apiCfg := &apiConfig{
-		hits: 0,
+		hits:       0,
+		Jwt_Secret: jwt_secret,
+	}
+
+	// get database connection string
+	db_uri := os.Getenv("DB_URI")
+	if db_uri == "" {
+		log.Println("database connection not established")
+	} else {
+		connection, err := sql.Open("postgres", db_uri)
+		if err != nil {
+			log.Fatalf("Error in opening sql driver")
+		}
+
+		db := database.New(connection)
+
+		apiCfg.DB = db
 	}
 
 	// main router
@@ -57,6 +84,10 @@ func main() {
 	// check health
 	apiRouter.Get("/checkhealth", apiCfg.checkHealth)
 	apiRouter.Get("/checkerror", apiCfg.checkError)
+
+	// user
+	apiRouter.Post("/register", apiCfg.register)
+	apiRouter.Post("/login", apiCfg.login)
 
 	// mount it on main router
 	mainRouter.Mount("/api/v1", apiRouter)
