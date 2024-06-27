@@ -12,6 +12,49 @@ import (
 	"github.com/google/uuid"
 )
 
+type ExamUserStatus string
+
+const (
+	ExamUserStatusAvailable ExamUserStatus = "available"
+	ExamUserStatusPaused    ExamUserStatus = "paused"
+	ExamUserStatusCompleted ExamUserStatus = "completed"
+)
+
+func (e *ExamUserStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ExamUserStatus(s)
+	case string:
+		*e = ExamUserStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ExamUserStatus: %T", src)
+	}
+	return nil
+}
+
+type NullExamUserStatus struct {
+	ExamUserStatus ExamUserStatus
+	Valid          bool // Valid is true if ExamUserStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullExamUserStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.ExamUserStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ExamUserStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullExamUserStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ExamUserStatus), nil
+}
+
 type UserRole string
 
 const (
@@ -52,6 +95,30 @@ func (ns NullUserRole) Value() (driver.Value, error) {
 		return nil, nil
 	}
 	return string(ns.UserRole), nil
+}
+
+type ExamUser struct {
+	ID            uuid.UUID
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Userid        uuid.UUID
+	Examid        uuid.UUID
+	Score         int32
+	RemainingTime int32
+	Status        ExamUserStatus
+}
+
+type Question struct {
+	ID        uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Question  string
+	Option1   string
+	Option2   string
+	Option3   string
+	Option4   string
+	Correct   string
+	Examid    uuid.UUID
 }
 
 type User struct {
