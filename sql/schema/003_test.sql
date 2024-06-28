@@ -1,5 +1,5 @@
 -- +goose Up
-create table exam(
+create table test(
     id uuid primary key,
     created_at timestamp not null,
     updated_at timestamp not null,
@@ -12,5 +12,5 @@ create table exam(
     avg_score integer not null
 );
 
--- +goose down
-drop table exam;
+-- +goose Down
+drop table test;

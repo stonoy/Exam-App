@@ -12,47 +12,47 @@ import (
 	"github.com/google/uuid"
 )
 
-type ExamUserStatus string
+type TestUserStatus string
 
 const (
-	ExamUserStatusAvailable ExamUserStatus = "available"
-	ExamUserStatusPaused    ExamUserStatus = "paused"
-	ExamUserStatusCompleted ExamUserStatus = "completed"
+	TestUserStatusAvailable TestUserStatus = "available"
+	TestUserStatusPaused    TestUserStatus = "paused"
+	TestUserStatusCompleted TestUserStatus = "completed"
 )
 
-func (e *ExamUserStatus) Scan(src interface{}) error {
+func (e *TestUserStatus) Scan(src interface{}) error {
 	switch s := src.(type) {
 	case []byte:
-		*e = ExamUserStatus(s)
+		*e = TestUserStatus(s)
 	case string:
-		*e = ExamUserStatus(s)
+		*e = TestUserStatus(s)
 	default:
-		return fmt.Errorf("unsupported scan type for ExamUserStatus: %T", src)
+		return fmt.Errorf("unsupported scan type for TestUserStatus: %T", src)
 	}
 	return nil
 }
 
-type NullExamUserStatus struct {
-	ExamUserStatus ExamUserStatus
-	Valid          bool // Valid is true if ExamUserStatus is not NULL
+type NullTestUserStatus struct {
+	TestUserStatus TestUserStatus
+	Valid          bool // Valid is true if TestUserStatus is not NULL
 }
 
 // Scan implements the Scanner interface.
-func (ns *NullExamUserStatus) Scan(value interface{}) error {
+func (ns *NullTestUserStatus) Scan(value interface{}) error {
 	if value == nil {
-		ns.ExamUserStatus, ns.Valid = "", false
+		ns.TestUserStatus, ns.Valid = "", false
 		return nil
 	}
 	ns.Valid = true
-	return ns.ExamUserStatus.Scan(value)
+	return ns.TestUserStatus.Scan(value)
 }
 
 // Value implements the driver Valuer interface.
-func (ns NullExamUserStatus) Value() (driver.Value, error) {
+func (ns NullTestUserStatus) Value() (driver.Value, error) {
 	if !ns.Valid {
 		return nil, nil
 	}
-	return string(ns.ExamUserStatus), nil
+	return string(ns.TestUserStatus), nil
 }
 
 type UserRole string
@@ -97,17 +97,6 @@ func (ns NullUserRole) Value() (driver.Value, error) {
 	return string(ns.UserRole), nil
 }
 
-type ExamUser struct {
-	ID            uuid.UUID
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-	Userid        uuid.UUID
-	Examid        uuid.UUID
-	Score         int32
-	RemainingTime int32
-	Status        ExamUserStatus
-}
-
 type Question struct {
 	ID        uuid.UUID
 	CreatedAt time.Time
@@ -118,7 +107,31 @@ type Question struct {
 	Option3   string
 	Option4   string
 	Correct   string
-	Examid    uuid.UUID
+	Testid    uuid.UUID
+}
+
+type Test struct {
+	ID                uuid.UUID
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	Name              string
+	Description       string
+	Subject           string
+	Duration          int32
+	TotalParticipents int32
+	MaxScore          int32
+	AvgScore          int32
+}
+
+type TestUser struct {
+	ID            uuid.UUID
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Userid        uuid.UUID
+	Testid        uuid.UUID
+	Score         int32
+	RemainingTime int32
+	Status        TestUserStatus
 }
 
 type User struct {

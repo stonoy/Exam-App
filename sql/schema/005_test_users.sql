@@ -1,19 +1,19 @@
 -- +goose Up
-create table exam_user(
+create table test_user(
     id uuid primary key,
     created_at timestamp not null,
     updated_at timestamp not null,
     userid uuid not null
     references users(id)
     on delete cascade,
-    examid uuid not null
-    references exam(id)
+    testid uuid not null
+    references test(id)
     on delete cascade,
     score integer not null,
     remaining_time integer not null,
-    status exam_user_status not null,
-    unique(userid, examid)
+    status test_user_status not null,
+    unique(userid, testid)
 );
 
 -- +goose Down
-drop table exam_user;
+drop table test_user;

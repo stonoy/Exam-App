@@ -89,6 +89,17 @@ func main() {
 	apiRouter.Post("/register", apiCfg.register)
 	apiRouter.Post("/login", apiCfg.login)
 
+	// tests
+	apiRouter.Post("/createtest", apiCfg.authMiddleware(apiCfg.createTests))
+	apiRouter.Get("/tests", apiCfg.getAllTests)
+
+	// test_user
+	apiRouter.Post("/taketests", apiCfg.authMiddleware(apiCfg.takeTests))
+
+	// question
+	apiRouter.Post("/createquestions", apiCfg.authMiddleware(apiCfg.createQuestions))
+	apiRouter.Get("/testquestions/{testID}", apiCfg.provideQuestionsForTest)
+
 	// mount it on main router
 	mainRouter.Mount("/api/v1", apiRouter)
 

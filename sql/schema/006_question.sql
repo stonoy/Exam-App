@@ -9,8 +9,8 @@ create table question(
     option3 text not null,
     option4 text not null,
     correct text not null,
-    examid uuid not null
-    references exam(id)
+    testid uuid not null
+    references test(id)
     on delete cascade
 );
 

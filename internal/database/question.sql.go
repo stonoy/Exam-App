@@ -13,9 +13,9 @@ import (
 )
 
 const createQuestion = `-- name: CreateQuestion :one
-insert into question(id, created_at, updated_at, question, option1, option2, option3, option4, correct, examid)
+insert into question(id, created_at, updated_at, question, option1, option2, option3, option4, correct, testid)
 values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-returning id, created_at, updated_at, question, option1, option2, option3, option4, correct, examid
+returning id, created_at, updated_at, question, option1, option2, option3, option4, correct, testid
 `
 
 type CreateQuestionParams struct {
@@ -28,7 +28,7 @@ type CreateQuestionParams struct {
 	Option3   string
 	Option4   string
 	Correct   string
-	Examid    uuid.UUID
+	Testid    uuid.UUID
 }
 
 func (q *Queries) CreateQuestion(ctx context.Context, arg CreateQuestionParams) (Question, error) {
@@ -42,7 +42,7 @@ func (q *Queries) CreateQuestion(ctx context.Context, arg CreateQuestionParams) 
 		arg.Option3,
 		arg.Option4,
 		arg.Correct,
-		arg.Examid,
+		arg.Testid,
 	)
 	var i Question
 	err := row.Scan(
@@ -55,7 +55,46 @@ func (q *Queries) CreateQuestion(ctx context.Context, arg CreateQuestionParams) 
 		&i.Option3,
 		&i.Option4,
 		&i.Correct,
-		&i.Examid,
+		&i.Testid,
 	)
 	return i, err
+}
+
+const getAllQuestionsTest = `-- name: GetAllQuestionsTest :many
+select id, created_at, updated_at, question, option1, option2, option3, option4, correct, testid from question
+where testid = $1
+`
+
+func (q *Queries) GetAllQuestionsTest(ctx context.Context, testid uuid.UUID) ([]Question, error) {
+	rows, err := q.db.QueryContext(ctx, getAllQuestionsTest, testid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Question
+	for rows.Next() {
+		var i Question
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Question,
+			&i.Option1,
+			&i.Option2,
+			&i.Option3,
+			&i.Option4,
+			&i.Correct,
+			&i.Testid,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
