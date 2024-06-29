@@ -6,3 +6,11 @@ returning *;
 -- name: GetAllQuestionsTest :many
 select * from question
 where testid = $1;
+
+-- name: Evaluate :one
+select
+case
+	when correct = $1 then true
+	else false
+	end as evaluate
+from question where id = $2 and testid = $3;

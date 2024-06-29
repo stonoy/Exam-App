@@ -151,3 +151,37 @@ func (q *Queries) GetTestById(ctx context.Context, id uuid.UUID) (Test, error) {
 	)
 	return i, err
 }
+
+const updateTest = `-- name: UpdateTest :one
+update test
+set total_participents = total_participents + 1,
+updated_at = NOW(),
+avg_score = $1,
+max_score = GREATEST(max_score, $2)
+where id = $3
+returning id, created_at, updated_at, name, description, subject, duration, total_participents, max_score, avg_score
+`
+
+type UpdateTestParams struct {
+	AvgScore int32
+	MaxScore int32
+	ID       uuid.UUID
+}
+
+func (q *Queries) UpdateTest(ctx context.Context, arg UpdateTestParams) (Test, error) {
+	row := q.db.QueryRowContext(ctx, updateTest, arg.AvgScore, arg.MaxScore, arg.ID)
+	var i Test
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Description,
+		&i.Subject,
+		&i.Duration,
+		&i.TotalParticipents,
+		&i.MaxScore,
+		&i.AvgScore,
+	)
+	return i, err
+}

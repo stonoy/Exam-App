@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -142,77 +141,5 @@ func (cfg *apiConfig) getAllTests(w http.ResponseWriter, r *http.Request) {
 		AllTest:    testsDbToResp(tests),
 		NumOfPages: numOfPages,
 		Page:       pageInt,
-	})
-}
-
-func (cfg *apiConfig) takeTests(w http.ResponseWriter, r *http.Request, user database.User) {
-	// get test id as input
-	type reqStruct struct {
-		TestID string `json:"test_id"`
-	}
-
-	decoder := json.NewDecoder(r.Body)
-	reqObj := reqStruct{}
-	err := decoder.Decode(&reqObj)
-	if err != nil {
-		respWithError(w, 400, fmt.Sprintf("Error in decoding user response : %v", err))
-		return
-	}
-
-	// verify the inputs
-	if reqObj.TestID == "" {
-		respWithError(w, 400, "follow input instructions")
-		return
-	}
-
-	// parse str to uuid
-	TestIDuuid, err := strToUuid(reqObj.TestID)
-	if err != nil {
-		respWithError(w, 400, fmt.Sprintf("%v", err))
-		return
-	}
-
-	// get the test
-	test, err := cfg.DB.GetTestById(r.Context(), TestIDuuid)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			respWithError(w, 400, "No such test exists")
-		} else {
-			respWithError(w, 500, fmt.Sprintf("Error in GetTestById : %v", err))
-		}
-		return
-	}
-
-	// create test user
-	test_user, err := cfg.DB.CreateTestUser(r.Context(), database.CreateTestUserParams{
-		ID:            uuid.New(),
-		CreatedAt:     time.Now().UTC(),
-		UpdatedAt:     time.Now().UTC(),
-		Userid:        user.ID,
-		Testid:        TestIDuuid,
-		Score:         0,
-		RemainingTime: test.Duration,
-		Status:        database.TestUserStatus("available"),
-	})
-	if err != nil {
-		respWithError(w, 500, fmt.Sprintf("Error in CreateTestUser : %v", err))
-		return
-	}
-
-	// send response
-	type respStruct struct {
-		Test_Taken_Info Test_User_Pre `json:"test_taken_info"`
-	}
-
-	respWithJson(w, 201, respStruct{
-		Test_Taken_Info: Test_User_Pre{
-			ID:            test_user.ID,
-			CreatedAt:     test_user.CreatedAt,
-			UpdatedAt:     test_user.UpdatedAt,
-			Name:          test.Name,
-			Subject:       test.Subject,
-			RemainingTime: test_user.RemainingTime,
-			Status:        string(test_user.Status),
-		},
 	})
 }

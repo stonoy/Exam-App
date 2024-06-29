@@ -60,6 +60,28 @@ func (q *Queries) CreateQuestion(ctx context.Context, arg CreateQuestionParams) 
 	return i, err
 }
 
+const evaluate = `-- name: Evaluate :one
+select
+case
+	when correct = $1 then true
+	else false
+	end as evaluate
+from question where id = $2 and testid = $3
+`
+
+type EvaluateParams struct {
+	Correct string
+	ID      uuid.UUID
+	Testid  uuid.UUID
+}
+
+func (q *Queries) Evaluate(ctx context.Context, arg EvaluateParams) (bool, error) {
+	row := q.db.QueryRowContext(ctx, evaluate, arg.Correct, arg.ID, arg.Testid)
+	var evaluate bool
+	err := row.Scan(&evaluate)
+	return evaluate, err
+}
+
 const getAllQuestionsTest = `-- name: GetAllQuestionsTest :many
 select id, created_at, updated_at, question, option1, option2, option3, option4, correct, testid from question
 where testid = $1

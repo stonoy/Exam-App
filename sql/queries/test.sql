@@ -15,3 +15,12 @@ offset $4;
 -- name: GetNumAllTests :one
 select count(*) from test
 where name like $1 and subject like $2;
+
+-- name: UpdateTest :one
+update test
+set total_participents = total_participents + 1,
+updated_at = NOW(),
+avg_score = $1,
+max_score = GREATEST(max_score, $2)
+where id = $3
+returning *;

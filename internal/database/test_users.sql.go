@@ -53,3 +53,142 @@ func (q *Queries) CreateTestUser(ctx context.Context, arg CreateTestUserParams) 
 	)
 	return i, err
 }
+
+const getTestUserPresent = `-- name: GetTestUserPresent :one
+select id, created_at, updated_at, userid, testid, score, remaining_time, status from test_user where testid = $1 and userid = $2
+`
+
+type GetTestUserPresentParams struct {
+	Testid uuid.UUID
+	Userid uuid.UUID
+}
+
+func (q *Queries) GetTestUserPresent(ctx context.Context, arg GetTestUserPresentParams) (TestUser, error) {
+	row := q.db.QueryRowContext(ctx, getTestUserPresent, arg.Testid, arg.Userid)
+	var i TestUser
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Userid,
+		&i.Testid,
+		&i.Score,
+		&i.RemainingTime,
+		&i.Status,
+	)
+	return i, err
+}
+
+const pauseTestUser = `-- name: PauseTestUser :one
+update test_user
+set remaining_time = $1,
+status = $2
+where testid = $3 and userid = $4 and status = $5
+returning id, created_at, updated_at, userid, testid, score, remaining_time, status
+`
+
+type PauseTestUserParams struct {
+	RemainingTime int32
+	Status        TestUserStatus
+	Testid        uuid.UUID
+	Userid        uuid.UUID
+	Status_2      TestUserStatus
+}
+
+func (q *Queries) PauseTestUser(ctx context.Context, arg PauseTestUserParams) (TestUser, error) {
+	row := q.db.QueryRowContext(ctx, pauseTestUser,
+		arg.RemainingTime,
+		arg.Status,
+		arg.Testid,
+		arg.Userid,
+		arg.Status_2,
+	)
+	var i TestUser
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Userid,
+		&i.Testid,
+		&i.Score,
+		&i.RemainingTime,
+		&i.Status,
+	)
+	return i, err
+}
+
+const restartTestUser = `-- name: RestartTestUser :one
+update test_user
+set status = $1
+where testid = $2 and userid = $3 and status = $4
+returning id, created_at, updated_at, userid, testid, score, remaining_time, status
+`
+
+type RestartTestUserParams struct {
+	Status   TestUserStatus
+	Testid   uuid.UUID
+	Userid   uuid.UUID
+	Status_2 TestUserStatus
+}
+
+func (q *Queries) RestartTestUser(ctx context.Context, arg RestartTestUserParams) (TestUser, error) {
+	row := q.db.QueryRowContext(ctx, restartTestUser,
+		arg.Status,
+		arg.Testid,
+		arg.Userid,
+		arg.Status_2,
+	)
+	var i TestUser
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Userid,
+		&i.Testid,
+		&i.Score,
+		&i.RemainingTime,
+		&i.Status,
+	)
+	return i, err
+}
+
+const submitTestAndUpdate = `-- name: SubmitTestAndUpdate :one
+update test_user
+set remaining_time = $1,
+status = $2,
+score = $3
+where testid = $4 and userid = $5 and status = $6
+returning id, created_at, updated_at, userid, testid, score, remaining_time, status
+`
+
+type SubmitTestAndUpdateParams struct {
+	RemainingTime int32
+	Status        TestUserStatus
+	Score         int32
+	Testid        uuid.UUID
+	Userid        uuid.UUID
+	Status_2      TestUserStatus
+}
+
+func (q *Queries) SubmitTestAndUpdate(ctx context.Context, arg SubmitTestAndUpdateParams) (TestUser, error) {
+	row := q.db.QueryRowContext(ctx, submitTestAndUpdate,
+		arg.RemainingTime,
+		arg.Status,
+		arg.Score,
+		arg.Testid,
+		arg.Userid,
+		arg.Status_2,
+	)
+	var i TestUser
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Userid,
+		&i.Testid,
+		&i.Score,
+		&i.RemainingTime,
+		&i.Status,
+	)
+	return i, err
+}

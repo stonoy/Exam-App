@@ -95,6 +95,10 @@ func main() {
 
 	// test_user
 	apiRouter.Post("/taketests", apiCfg.authMiddleware(apiCfg.takeTests))
+	apiRouter.Get("/checktestpresent/{testID}", apiCfg.authMiddleware(apiCfg.checkTestPresent))
+	apiRouter.Put("/submittest/{testID}", apiCfg.authMiddleware(apiCfg.submitTest))
+	apiRouter.Put("/pauseexam/{testID}", apiCfg.authMiddleware(apiCfg.setTestPause))
+	apiRouter.Put("/restartexam/{testID}", apiCfg.authMiddleware(apiCfg.setTestAvailable))
 
 	// question
 	apiRouter.Post("/createquestions", apiCfg.authMiddleware(apiCfg.createQuestions))

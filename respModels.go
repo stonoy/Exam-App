@@ -37,6 +37,18 @@ type Test_User_Pre struct {
 	Status        string    `json:"status"`
 }
 
+type Test_User_Post struct {
+	ID                uuid.UUID `json:"id"`
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
+	Name              string    `json:"name"`
+	Subject           string    `json:"subject"`
+	TotalParticipents int32     `json:"total_participents"`
+	MaxScore          int32     `json:"max_score"`
+	AvgScore          int32     `json:"avg_score"`
+	Status            string    `json:"status"`
+}
+
 type Question struct {
 	ID       uuid.UUID `json:"id"`
 	Question string    `json:"question"`
@@ -45,6 +57,11 @@ type Question struct {
 	Option3  string    `json:"option3"`
 	Option4  string    `json:"option4"`
 	Testid   uuid.UUID `json:"test_id"`
+}
+
+type Answer_Set struct {
+	QuestionID uuid.UUID `json:"question_id"`
+	Answer     string    `json:"answer"`
 }
 
 func testsDbToResp(allDbTests []database.Test) []Test {
