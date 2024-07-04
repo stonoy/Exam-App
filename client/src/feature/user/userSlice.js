@@ -1,21 +1,31 @@
 import {createSlice } from '@reduxjs/toolkit'
 
 const initailState = {
-    name : "",
-    role: "student",
-    token: ""
+    token : "",
+    user : {
+        role: "student",
+        name: "Guest User",
+    }
 }
 
 const userSlice = createSlice({
     name : "user",
-    initialState: localStorage.getItem("user") || initailState,
+    initialState: JSON.parse(localStorage.getItem("user")) || initailState,
     reducers: {
-        setUser : (state, action) => {
-            console.log(action)
+        setUser : (state, {payload : {token, user : {name,role}}}) => {
+            
+            state.token = token
+            state.user.role = role
+            state.user.name = name
+            localStorage.setItem("user", JSON.stringify(state))
+        },
+        logout : () => {
+            localStorage.removeItem("user")
+            return initailState
         }
     }
 })
 
-export const {setUser} = userSlice.actions
+export const {setUser, logout} = userSlice.actions
 
 export default userSlice.reducer

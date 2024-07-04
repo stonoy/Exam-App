@@ -5,14 +5,22 @@ import {
   } from "react-router-dom"
 
 // pages
-import { About, ErrorPage, HomeLayOut, Landing, Login, Register } from './pages'
+import { About, AdminLayout, ErrorPage, HomeLayOut, Landing, Login, MyTests, OnGoingTest, Register, SingleTest } from './pages'
 
 // store
 import {store} from './store'
 
+// loader
+import {loader as landingLoader} from './pages/Landing'
+import {loader as singleTestLoader} from './pages/SingleTest'
+import {loader as liveTestLoader} from './pages/OnGoingTest'
+
 // actions
 import {action as registerAction} from './pages/Register'
 import {action as loginAction} from './pages/Login'
+import {action as liveTestAction} from './pages/OnGoingTest'
+import { action as starttestAction} from './pages/StartTest'
+
 
 const router = createBrowserRouter([
     {
@@ -23,10 +31,34 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <Landing/>,
+                loader: landingLoader,
+            },
+            {
+                path: 'tests/:id',
+                element: <SingleTest/>,
+                loader: singleTestLoader(store),
+            },
+            {
+                path: 'starttest/:id',
+                action: starttestAction(store),
+            },
+            {
+                path: 'livetest/:id',
+                element: <OnGoingTest/>,
+                action: liveTestAction(store),
+                loader: liveTestLoader(store),
             },
             {
                 path: 'about',
                 element: <About/>,
+            },
+            {
+                path: 'mytests',
+                element: <MyTests/>,
+            },
+            {
+                path: 'admin',
+                element: <AdminLayout/>,
             },
         ]
     },
