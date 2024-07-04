@@ -2,6 +2,7 @@ import React from 'react'
 import { customFetch, provideStartExamBtn } from '../utils'
 import { toast } from 'react-toastify'
 import { Form, redirect, useLoaderData, useParams } from 'react-router-dom'
+import { setTestDetails } from '../feature/test/testSlice'
 
 export const loader = (store) => async({params}) => {
     const {id} = params
@@ -15,10 +16,13 @@ export const loader = (store) => async({params}) => {
         }
       })
 
+      // console.log(resp?.data)
+
       const {is_present, test_taken_info : {status}} = resp?.data
 
       if (is_present && ( status === "available")){
         // update the test details in redux state test
+        store.dispatch(setTestDetails(resp?.data))
       }
 
       return resp?.data
