@@ -1,11 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const Question = () => {
-    const {selectedQuestionIndex, questions} = useSelector((state) => state.test)
+const Question = ({questionData}) => {
+    
 
-    const questionData = questions[selectedQuestionIndex]
-    console.log(selectedQuestionIndex)
+    
+    // console.log(questionData)
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-2xl font-bold mb-4">Question {questionData.index + 1}</h2>
