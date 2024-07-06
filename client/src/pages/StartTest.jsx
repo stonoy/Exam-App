@@ -1,13 +1,14 @@
 import React from 'react'
 import { redirect } from 'react-router-dom'
 import { customFetch } from '../utils'
-import { setTestDetails } from '../feature/test/testSlice'
+import { resetTest, setTestDetails } from '../feature/test/testSlice'
 
 export const action = (store) => async ({request,params}) => {
     const token = store.getState().user.token
     const {id} = params
     const formData = await request.formData()
     const intent = formData.get("intent")
+
 
     // intent is not_present -> create a new test_user api endpoint 'taketests' and update the redux state test and redirect to live test
     if (intent === "not_present"){

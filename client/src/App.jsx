@@ -5,7 +5,7 @@ import {
   } from "react-router-dom"
 
 // pages
-import { About, AdminLayout, ErrorPage, HomeLayOut, Landing, Login, MyTests, OnGoingTest, Register, SingleTest } from './pages'
+import { About, AdminLayout, ErrorPage, HomeLayOut, Landing, Login, MyTests, OnGoingTest, Register, ShowResult, SingleTest } from './pages'
 
 // store
 import {store} from './store'
@@ -51,6 +51,10 @@ const router = createBrowserRouter([
             {
                 path: 'about',
                 element: <About/>,
+            },
+            {
+                path: 'result',
+                element: <ShowResult/>,
             },
             {
                 path: 'mytests',

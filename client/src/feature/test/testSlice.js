@@ -7,6 +7,7 @@ const initailState = {
     remaining_time: 0,
     status: "",
     questions: [],
+    result: null,
 }
 
 const testSlice = createSlice({
@@ -19,6 +20,7 @@ const testSlice = createSlice({
             state.subject = subject
             state.remaining_time = remaining_time
             state.status = status
+            state.selectedQuestionIndex = 0
 
             localStorage.setItem("test", JSON.stringify(state))
         },
@@ -55,10 +57,38 @@ const testSlice = createSlice({
         setTimer: (state, {payload}) => {
             state.remaining_time--
             // console.log(payload)
+        },
+        toggleStatus: (state, {payload : {status}}) => {
+            state.status = status
+        },
+        resetTest: () => {
+            return initailState
+        },
+        setAnswer: (state, {payload:{questionId, givenAnswer}}) => {
+            state.questions = state.questions.map((question) => {
+                if (question.id === questionId){
+                    return {...question, answer: givenAnswer}
+                } else {
+                    return question
+                }
+            })
+        },
+        deSelectAnswer: (state, {payload:{questionId}}) => {
+            state.questions = state.questions.map((question) => {
+                if (question.id === questionId){
+                    return {...question, answer: ""}
+                } else {
+                    return question
+                }
+            })
+        },
+        showResult: (state, {payload}) => {
+            state.result = payload
+            state.status = "completed"
         }
     }
 })
 
-export const {setTestDetails, setQuestions,changeQuestion,setTag, setTimer} = testSlice.actions
+export const {setTestDetails, setQuestions,changeQuestion,setTag, setTimer, toggleStatus, resetTest, setAnswer, deSelectAnswer, showResult} = testSlice.actions
 
 export default testSlice.reducer

@@ -1,9 +1,14 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setAnswer } from '../feature/test/testSlice'
 
 const Question = ({questionData}) => {
+  const dispatch = useDispatch()
     
-
+const handleAnswer = (e) => {
+  console.log(e.target.value, questionData.id)
+  dispatch(setAnswer({questionId : questionData.id, givenAnswer : e.target.value}))
+}
     
     // console.log(questionData)
   return (
@@ -17,6 +22,8 @@ const Question = ({questionData}) => {
                   type="radio"
                   name="option"
                   value={questionData.option1}
+                  checked={questionData.answer === questionData.option1}
+                  onChange={(e) => handleAnswer(e)}
                   className="mr-2"
                 />
                 {questionData.option1}
@@ -28,6 +35,8 @@ const Question = ({questionData}) => {
                   type="radio"
                   name="option"
                   value={questionData.option2}
+                  checked={questionData.answer === questionData.option2}
+                  onChange={(e) => handleAnswer(e)}
                   className="mr-2"
                 />
                 {questionData.option2}
@@ -39,6 +48,8 @@ const Question = ({questionData}) => {
                   type="radio"
                   name="option"
                   value={questionData.option3}
+                  checked={questionData.answer === questionData.option3}
+                  onChange={(e) => handleAnswer(e)}
                   className="mr-2"
                 />
                 {questionData.option3}
@@ -50,6 +61,8 @@ const Question = ({questionData}) => {
                   type="radio"
                   name="option"
                   value={questionData.option4}
+                  checked={questionData.answer === questionData.option4}
+                  onChange={(e) => handleAnswer(e)}
                   className="mr-2"
                 />
                 {questionData.option4}

@@ -43,6 +43,7 @@ type Test_User_Post struct {
 	UpdatedAt         time.Time `json:"updated_at"`
 	Name              string    `json:"name"`
 	Subject           string    `json:"subject"`
+	MyScore           int32     `json:"my_score"`
 	TotalParticipents int32     `json:"total_participents"`
 	MaxScore          int32     `json:"max_score"`
 	AvgScore          int32     `json:"avg_score"`

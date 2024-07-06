@@ -374,6 +374,7 @@ func (cfg *apiConfig) submitTest(w http.ResponseWriter, r *http.Request, user da
 			UpdatedAt:         test_user.UpdatedAt,
 			Name:              test.Name,
 			Subject:           test.Subject,
+			MyScore:           test_user.Score,
 			TotalParticipents: updated_test.TotalParticipents,
 			AvgScore:          updated_test.AvgScore,
 			MaxScore:          updated_test.MaxScore,

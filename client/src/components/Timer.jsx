@@ -8,6 +8,7 @@ const Timer = () => {
 
     useEffect(()=>{
         const intId = setInterval(()=> {
+            console.log(remaining_time)
             dispatch(setTimer())
         },1000)
 
