@@ -1,7 +1,20 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { navigateQuestion } from '../feature/test/testSlice';
 
 const QuestionNavigationModal = ({ questions, toggleModal }) => {
+  const dispatch = useDispatch()
+
+  const setQuestion = (index) => {
+    dispatch(navigateQuestion(index))
+    toggleModal()
+  }
+
+  const tagColor = (question) => {
+    return question.hasTagged ? "bg-orange-500" : question.attempted ? "bg-green-500" : "bg-grey-500"
+  }
+
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
@@ -11,12 +24,12 @@ const QuestionNavigationModal = ({ questions, toggleModal }) => {
             <FaTimes />
           </button>
         </div>
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-5 gap-2">
           {questions.map((question) => (
             <button
               key={question.id}
-              className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-300"
-              onClick={() => console.log(`Navigating to question ${index + 1}`)}
+              className={`${tagColor(question)} w-10 h-10 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-300`}
+              onClick={() => setQuestion(question.index)}
             >
               {question.index + 1}
             </button>
@@ -28,13 +41,3 @@ const QuestionNavigationModal = ({ questions, toggleModal }) => {
 };
 
 export default QuestionNavigationModal;
-
-// Usage example:
-// const questions = [
-//   { id: '1', question: 'Question 1?' },
-//   { id: '2', question: 'Question 2?' },
-//   { id: '3', question: 'Question 3?' },
-//   // Add more questions as needed
-// ];
-
-// <QuestionNavigationModal questions={questions} toggleModal={() => setModalOpen(false)} />

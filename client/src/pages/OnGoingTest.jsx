@@ -174,16 +174,16 @@ const OnGoingTest = () => {
 
         {/* Next, Previous, and Tag button on down right */}
         <div className="flex justify-end mb-4">
-          <button onClick={() => deSelectAnswer({ questionId: questionData.id })} className="bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 mr-2">
+          <button onClick={() => dispatch(deSelectAnswer({ questionId: questionData.id }))} className="bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 mr-2">
             De Select
           </button>
-          <button onClick={() => setTag({ id: questionData.id })} className={`${questionData.hasTagged ? "bg-red-500" : "bg-gray-500"} text-white font-bold py-2 px-4 rounded hover:bg-gray-700 mr-2`}>
+          <button onClick={() => dispatch(setTag({ id: questionData.id }))} className={`${questionData.hasTagged ? "bg-red-500" : "bg-gray-500"} text-white font-bold py-2 px-4 rounded hover:bg-gray-700 mr-2`}>
             Tag
           </button>
-          <button onClick={() => changeQuestion({ type: "prev" })} disabled={selectedQuestionIndex === 0} className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 mr-2">
+          <button onClick={() => dispatch(changeQuestion({ type: "prev" }))} disabled={selectedQuestionIndex === 0} className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 mr-2">
             Previous
           </button>
-          <button onClick={() => changeQuestion({ type: "next" })} disabled={selectedQuestionIndex === questions.length - 1} className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
+          <button onClick={() => dispatch(changeQuestion({ type: "next" }))} disabled={selectedQuestionIndex === questions.length - 1} className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
             Next
           </button>
         </div>

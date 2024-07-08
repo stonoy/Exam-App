@@ -36,6 +36,7 @@ const testSlice = createSlice({
             localStorage.setItem("test", JSON.stringify(state))
         },
         changeQuestion: (state, {payload: {type}}) => {
+            console.log(type)
             if (type === "next"){
                 state.selectedQuestionIndex++
             } else {
@@ -67,7 +68,7 @@ const testSlice = createSlice({
         setAnswer: (state, {payload:{questionId, givenAnswer}}) => {
             state.questions = state.questions.map((question) => {
                 if (question.id === questionId){
-                    return {...question, answer: givenAnswer}
+                    return {...question, answer: givenAnswer, attempted: true}
                 } else {
                     return question
                 }
@@ -76,7 +77,7 @@ const testSlice = createSlice({
         deSelectAnswer: (state, {payload:{questionId}}) => {
             state.questions = state.questions.map((question) => {
                 if (question.id === questionId){
-                    return {...question, answer: ""}
+                    return {...question, answer: "", attempted: false}
                 } else {
                     return question
                 }
@@ -85,10 +86,13 @@ const testSlice = createSlice({
         showResult: (state, {payload}) => {
             state.result = payload
             state.status = "completed"
+        },
+        navigateQuestion: (state, {payload}) => {
+            state.selectedQuestionIndex = payload
         }
     }
 })
 
-export const {setTestDetails, setQuestions,changeQuestion,setTag, setTimer, toggleStatus, resetTest, setAnswer, deSelectAnswer, showResult} = testSlice.actions
+export const {setTestDetails, setQuestions,changeQuestion,setTag, setTimer, toggleStatus, resetTest, setAnswer, deSelectAnswer, showResult, navigateQuestion} = testSlice.actions
 
 export default testSlice.reducer
