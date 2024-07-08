@@ -76,11 +76,19 @@ func (cfg *apiConfig) createQuestions(w http.ResponseWriter, r *http.Request, us
 
 	// send response
 	type respStruct struct {
-		Msg string `json:"msg"`
+		Question Question `json:"question"`
 	}
 
 	respWithJson(w, 201, respStruct{
-		Msg: fmt.Sprintf("Question created with id : %v", question.ID),
+		Question: Question{
+			ID:       question.ID,
+			Question: question.Question,
+			Option1:  question.Option1,
+			Option2:  question.Option2,
+			Option3:  question.Option3,
+			Option4:  question.Option4,
+			Testid:   question.Testid,
+		},
 	})
 }
 

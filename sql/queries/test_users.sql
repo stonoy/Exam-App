@@ -26,3 +26,8 @@ status = $2,
 score = $3
 where testid = $4 and userid = $5 and status = $6
 returning *;
+
+-- name: GetTestsOfUser :many
+select tu.*, t.* from test_user tu
+inner join test t on tu.testid = t.id
+where tu.userid = $1 and tu.status = $2;

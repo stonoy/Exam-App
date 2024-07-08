@@ -103,3 +103,24 @@ func questionsDbToResp(DbQuestions []database.Question) []Question {
 
 	return allQuestions
 }
+
+func mytestsDbToResp(tests []database.GetTestsOfUserRow) []Test_User_Post {
+	myTests := []Test_User_Post{}
+
+	for _, test := range tests {
+		myTests = append(myTests, Test_User_Post{
+			ID:                test.ID,
+			CreatedAt:         test.CreatedAt,
+			UpdatedAt:         test.UpdatedAt,
+			Name:              test.Name,
+			Subject:           test.Subject,
+			MyScore:           test.Score,
+			TotalParticipents: test.TotalParticipents,
+			MaxScore:          test.MaxScore,
+			AvgScore:          test.AvgScore,
+			Status:            string(test.Status),
+		})
+	}
+
+	return myTests
+}

@@ -5,7 +5,7 @@ import {
   } from "react-router-dom"
 
 // pages
-import { About, AdminLayout, ErrorPage, HomeLayOut, Landing, Login, MyTests, OnGoingTest, Register, ShowResult, SingleTest } from './pages'
+import { About, AddQuestion, AdminInsights, AdminLanding, AdminLayout, EditTest, ErrorPage, HomeLayOut, Landing, Login, MyTests, OnGoingTest, Register, ShowResult, SingleTest } from './pages'
 
 // store
 import {store} from './store'
@@ -14,12 +14,16 @@ import {store} from './store'
 import {loader as landingLoader} from './pages/Landing'
 import {loader as singleTestLoader} from './pages/SingleTest'
 import {loader as liveTestLoader} from './pages/OnGoingTest'
+import {loader as myTestsLoader} from './pages/MyTests'
+import {loader as adminLandingLoader} from './pages/AdminLanding'
 
 // actions
 import {action as registerAction} from './pages/Register'
 import {action as loginAction} from './pages/Login'
 import {action as liveTestAction} from './pages/OnGoingTest'
 import { action as starttestAction} from './pages/StartTest'
+import {action as addTestAction} from './pages/AdminLanding'
+import {action as addQuestionAction} from './pages/AddQuestion'
 
 
 const router = createBrowserRouter([
@@ -59,10 +63,32 @@ const router = createBrowserRouter([
             {
                 path: 'mytests',
                 element: <MyTests/>,
+                loader: myTestsLoader(store),
             },
             {
                 path: 'admin',
                 element: <AdminLayout/>,
+                children: [
+                    {
+                        index: true,
+                        element: <AdminLanding/>,
+                        loader: adminLandingLoader,
+                        action: addTestAction(store),
+                    },
+                    {
+                        path: "insights",
+                        element: <AdminInsights/>,
+                    },
+                    {
+                        path: "edittest/:id",
+                        element: <EditTest/>,
+                    },
+                    {
+                        path: "addquestion/:id",
+                        element: <AddQuestion/>,
+                        action: addQuestionAction(store),
+                    },
+                ]
             },
         ]
     },

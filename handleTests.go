@@ -67,11 +67,22 @@ func (cfg *apiConfig) createTests(w http.ResponseWriter, r *http.Request, user d
 
 	// send response
 	type respStruct struct {
-		Msg string `json:"msg"`
+		Test Test `json:"test"`
 	}
 
 	respWithJson(w, 201, respStruct{
-		Msg: fmt.Sprintf("Test created with Id : %v", test.ID),
+		Test: Test{
+			ID:                test.ID,
+			CreatedAt:         test.CreatedAt,
+			UpdatedAt:         test.UpdatedAt,
+			Name:              test.Name,
+			Subject:           test.Subject,
+			Description:       test.Description,
+			TotalParticipents: test.TotalParticipents,
+			MaxScore:          test.MaxScore,
+			AvgScore:          test.AvgScore,
+			Duration:          test.Duration,
+		},
 	})
 }
 

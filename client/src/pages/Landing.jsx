@@ -6,7 +6,7 @@ import {  Gallery, Pagination } from '../components'
 import FilterSection from '../components/FilterSection'
 
 export const loader = async ({request}) => {
-  console.log(request.url)
+  // console.log(request.url)
   
   const theUrl = getQueryReadyUrl("tests", request)
 

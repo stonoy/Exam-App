@@ -99,6 +99,7 @@ func main() {
 	apiRouter.Put("/submittest/{testID}", apiCfg.authMiddleware(apiCfg.submitTest))
 	apiRouter.Put("/pauseexam/{testID}", apiCfg.authMiddleware(apiCfg.setTestPause))
 	apiRouter.Put("/restartexam/{testID}", apiCfg.authMiddleware(apiCfg.setTestAvailable))
+	apiRouter.Get("/mytests", apiCfg.authMiddleware(apiCfg.testsOfUser))
 
 	// question
 	apiRouter.Post("/createquestions", apiCfg.authMiddleware(apiCfg.createQuestions))

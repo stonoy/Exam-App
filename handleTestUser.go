@@ -382,3 +382,25 @@ func (cfg *apiConfig) submitTest(w http.ResponseWriter, r *http.Request, user da
 		},
 	})
 }
+
+func (cfg *apiConfig) testsOfUser(w http.ResponseWriter, r *http.Request, user database.User) {
+	// get all the tests details of a user where status is completed
+
+	test_users, err := cfg.DB.GetTestsOfUser(r.Context(), database.GetTestsOfUserParams{
+		Userid: user.ID,
+		Status: database.TestUserStatus("completed"),
+	})
+	if err != nil {
+		respWithError(w, 500, fmt.Sprintf("Error in GetTestsOfUser : %v", err))
+		return
+	}
+
+	// send response
+	type respStruct struct {
+		My_Tests []Test_User_Post `json:"my_tests"`
+	}
+
+	respWithJson(w, 200, respStruct{
+		My_Tests: mytestsDbToResp(test_users),
+	})
+}

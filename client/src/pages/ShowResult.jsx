@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 const ShowResult = () => {
     const {result} = useSelector((state) => state.test)
-    console.log(result)
+    // console.log(result)
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
       <div className="w-full max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">

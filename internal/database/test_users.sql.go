@@ -79,6 +79,80 @@ func (q *Queries) GetTestUserPresent(ctx context.Context, arg GetTestUserPresent
 	return i, err
 }
 
+const getTestsOfUser = `-- name: GetTestsOfUser :many
+select tu.id, tu.created_at, tu.updated_at, tu.userid, tu.testid, tu.score, tu.remaining_time, tu.status, t.id, t.created_at, t.updated_at, t.name, t.description, t.subject, t.duration, t.total_participents, t.max_score, t.avg_score from test_user tu
+inner join test t on tu.testid = t.id
+where tu.userid = $1 and tu.status = $2
+`
+
+type GetTestsOfUserParams struct {
+	Userid uuid.UUID
+	Status TestUserStatus
+}
+
+type GetTestsOfUserRow struct {
+	ID                uuid.UUID
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	Userid            uuid.UUID
+	Testid            uuid.UUID
+	Score             int32
+	RemainingTime     int32
+	Status            TestUserStatus
+	ID_2              uuid.UUID
+	CreatedAt_2       time.Time
+	UpdatedAt_2       time.Time
+	Name              string
+	Description       string
+	Subject           string
+	Duration          int32
+	TotalParticipents int32
+	MaxScore          int32
+	AvgScore          int32
+}
+
+func (q *Queries) GetTestsOfUser(ctx context.Context, arg GetTestsOfUserParams) ([]GetTestsOfUserRow, error) {
+	rows, err := q.db.QueryContext(ctx, getTestsOfUser, arg.Userid, arg.Status)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetTestsOfUserRow
+	for rows.Next() {
+		var i GetTestsOfUserRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Userid,
+			&i.Testid,
+			&i.Score,
+			&i.RemainingTime,
+			&i.Status,
+			&i.ID_2,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
+			&i.Name,
+			&i.Description,
+			&i.Subject,
+			&i.Duration,
+			&i.TotalParticipents,
+			&i.MaxScore,
+			&i.AvgScore,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const pauseTestUser = `-- name: PauseTestUser :one
 update test_user
 set remaining_time = $1,
