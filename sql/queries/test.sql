@@ -24,3 +24,7 @@ avg_score = $1,
 max_score = GREATEST(max_score, $2)
 where id = $3
 returning *;
+
+-- name: DeleteTest :one
+delete from test where id = $1
+returning *;

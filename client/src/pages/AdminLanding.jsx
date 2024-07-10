@@ -11,7 +11,7 @@ export const loader = async ({request}) => {
   
     try {
       const resp = await customFetch(theUrl)
-      // console.log(resp.data)
+    
       return resp.data
     } catch (error) {
       const errorMsg = error?.response?.data?.msg || 'Error in getting tests'
@@ -53,19 +53,21 @@ export const action = (store) => async ({request}) => {
 
 const AdminLanding = () => {
     const {allTests, numOfPages, page} = useLoaderData()
+    // const data = useLoaderData()
 
   return (
     <div className="bg-gray-100">
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       {/* Filter Section */}
-      {/* <FilterSection isFilterApplied={isFilterApplied} myFilter={myFilter} handleOpenFilter={handleOpenFilter} handleSearch={handleSearch}/> */}
+      
+      <CreateTest />
 
-      <Gallery allTests={allTests}/>
+      <Gallery allTests={allTests} admin={true}/>
 
       {/* Pagination */}
       <Pagination numOfPages={numOfPages} page={page} />
 
-      <CreateTest />
+      
 
       
       

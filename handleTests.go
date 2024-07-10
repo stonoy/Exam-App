@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/stonoy/Exam-App/internal/database"
 )
@@ -153,4 +154,35 @@ func (cfg *apiConfig) getAllTests(w http.ResponseWriter, r *http.Request) {
 		NumOfPages: numOfPages,
 		Page:       pageInt,
 	})
+}
+
+func (cfg *apiConfig) deleteTest(w http.ResponseWriter, r *http.Request, user database.User) {
+	// check user is admin
+	if string(user.Role) != "admin" {
+		respWithError(w, 403, "Not Authorised")
+		return
+	}
+
+	// get the test id from url
+	testIdStr := chi.URLParam(r, "testID")
+
+	// convert id to uuid
+	testId, err := strToUuid(testIdStr)
+	if err != nil {
+		respWithError(w, 400, fmt.Sprintf("Error in strToUuid : %v", err))
+		return
+	}
+
+	// delete test
+	test, err := cfg.DB.DeleteTest(r.Context(), testId)
+	if err != nil {
+		respWithError(w, 500, fmt.Sprintf("Error in DeleteTest : %v", err))
+		return
+	}
+
+	type respStruct struct {
+		Msg string `json:"msg"`
+	}
+
+	respWithJson(w, 200, fmt.Sprintf("test id : %v deleted", test.ID))
 }

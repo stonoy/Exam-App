@@ -16,6 +16,7 @@ import {loader as singleTestLoader} from './pages/SingleTest'
 import {loader as liveTestLoader} from './pages/OnGoingTest'
 import {loader as myTestsLoader} from './pages/MyTests'
 import {loader as adminLandingLoader} from './pages/AdminLanding'
+import {loader as adminlayoutLoader} from './pages/AdminLayout'
 
 // actions
 import {action as registerAction} from './pages/Register'
@@ -24,6 +25,7 @@ import {action as liveTestAction} from './pages/OnGoingTest'
 import { action as starttestAction} from './pages/StartTest'
 import {action as addTestAction} from './pages/AdminLanding'
 import {action as addQuestionAction} from './pages/AddQuestion'
+import {action as deleteTestAction} from './pages/DeleteTest'
 
 
 const router = createBrowserRouter([
@@ -68,12 +70,17 @@ const router = createBrowserRouter([
             {
                 path: 'admin',
                 element: <AdminLayout/>,
+                loader: adminlayoutLoader(store),
                 children: [
                     {
                         index: true,
                         element: <AdminLanding/>,
                         loader: adminLandingLoader,
                         action: addTestAction(store),
+                    },
+                    {
+                        path: "deletetest/:id",
+                        action: deleteTestAction(store),
                     },
                     {
                         path: "insights",

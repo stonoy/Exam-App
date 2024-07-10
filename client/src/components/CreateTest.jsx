@@ -4,7 +4,7 @@ import AdminInput from './AdminInput'
 
 const CreateTest = () => {
   return (
-    <div className="max-w-3xl mt-8 mx-auto bg-slate-300 p-6 rounded-lg shadow-lg">
+    <div className="max-w-3xl my-8 mx-auto bg-slate-300 p-6 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold mb-6">Creat Test</h2>
 
         <Form method="post">

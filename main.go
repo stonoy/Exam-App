@@ -88,10 +88,12 @@ func main() {
 	// user
 	apiRouter.Post("/register", apiCfg.register)
 	apiRouter.Post("/login", apiCfg.login)
+	apiRouter.Get("/checkadmin", apiCfg.authMiddleware(apiCfg.checkAdmin))
 
 	// tests
 	apiRouter.Post("/createtest", apiCfg.authMiddleware(apiCfg.createTests))
 	apiRouter.Get("/tests", apiCfg.getAllTests)
+	apiRouter.Delete("/deletetest/{testID}", apiCfg.authMiddleware(apiCfg.deleteTest))
 
 	// test_user
 	apiRouter.Post("/taketests", apiCfg.authMiddleware(apiCfg.takeTests))

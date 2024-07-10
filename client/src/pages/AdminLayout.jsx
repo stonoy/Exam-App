@@ -1,5 +1,33 @@
 import React from 'react'
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, redirect } from 'react-router-dom';
+import { customFetch } from '../utils';
+import { toast } from 'react-toastify';
+
+export const loader = (store) => async() => {
+  const token = store.getState().user.token
+
+  try {
+    const resp = await customFetch("/checkadmin", {
+      headers : {
+        "Authorization": `Bearer ${token}`
+      }
+    })
+
+    toast.success(resp?.data?.msg)
+  } catch (error) {
+    const errMsg = error?.response?.data?.msg || "Error in verifying user"
+
+      const status = error?.response?.status
+
+      if (status === 401 || status === 403){
+        toast.warn("Login To Proceed")
+        return redirect("/login")
+      }
+
+      toast.error(errMsg)
+  }
+  return null
+  }
 
 const AdminLayout = () => {
   return (

@@ -60,6 +60,29 @@ func (q *Queries) CreateTest(ctx context.Context, arg CreateTestParams) (Test, e
 	return i, err
 }
 
+const deleteTest = `-- name: DeleteTest :one
+delete from test where id = $1
+returning id, created_at, updated_at, name, description, subject, duration, total_participents, max_score, avg_score
+`
+
+func (q *Queries) DeleteTest(ctx context.Context, id uuid.UUID) (Test, error) {
+	row := q.db.QueryRowContext(ctx, deleteTest, id)
+	var i Test
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.Description,
+		&i.Subject,
+		&i.Duration,
+		&i.TotalParticipents,
+		&i.MaxScore,
+		&i.AvgScore,
+	)
+	return i, err
+}
+
 const getAllTests = `-- name: GetAllTests :many
 select id, created_at, updated_at, name, description, subject, duration, total_participents, max_score, avg_score from test
 where name like $1 and subject like $2

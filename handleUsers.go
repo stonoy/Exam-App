@@ -150,3 +150,19 @@ func (cfg *apiConfig) login(w http.ResponseWriter, r *http.Request) {
 		Token: token,
 	})
 }
+
+func (cfg *apiConfig) checkAdmin(w http.ResponseWriter, r *http.Request, user database.User) {
+	// check user is admin
+	if string(user.Role) != "admin" {
+		respWithError(w, 403, "Not Authorised")
+		return
+	}
+
+	type respStruct struct {
+		Msg string `json:"msg"`
+	}
+
+	respWithJson(w, 200, respStruct{
+		Msg: "Welcome Admin",
+	})
+}
