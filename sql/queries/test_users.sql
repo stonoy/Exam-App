@@ -9,8 +9,9 @@ select * from test_user where testid = $1 and userid = $2;
 -- name: PauseTestUser :one
 update test_user
 set remaining_time = $1,
-status = $2
-where testid = $3 and userid = $4 and status = $5
+status = $2,
+second_counter = $3
+where testid = $4 and userid = $5 and status = $6
 returning *;
 
 -- name: RestartTestUser :one
@@ -23,8 +24,9 @@ returning *;
 update test_user
 set remaining_time = $1,
 status = $2,
-score = $3
-where testid = $4 and userid = $5 and status = $6
+score = $3,
+second_counter = $4
+where testid = $5 and userid = $6 and status = $7
 returning *;
 
 -- name: GetTestsOfUser :many

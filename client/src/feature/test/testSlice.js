@@ -4,6 +4,7 @@ const initailState = {
     test_name: "",
     selectedQuestionIndex: 0,
     subject: "",
+    secondCounter: 0,
     remaining_time: 0,
     status: "",
     questions: [],
@@ -14,11 +15,12 @@ const testSlice = createSlice({
     name: "test",
     initialState: JSON.parse(localStorage.getItem("test")) || initailState,
     reducers : {
-        setTestDetails: (state, {payload : {test_taken_info : {name, subject, remaining_time, status}}}) => {
-            console.log(name)
-            state.name = name
+        setTestDetails: (state, {payload : {test_taken_info : {name, subject, remaining_time,second_counter, status}}}) => {
+            // console.log(name)
+            state.test_name = name
             state.subject = subject
             state.remaining_time = remaining_time
+            state.secondCounter = second_counter
             state.status = status
             state.selectedQuestionIndex = 0
 
@@ -36,7 +38,7 @@ const testSlice = createSlice({
             localStorage.setItem("test", JSON.stringify(state))
         },
         changeQuestion: (state, {payload: {type}}) => {
-            console.log(type)
+            // console.log(type)
             if (type === "next"){
                 state.selectedQuestionIndex++
             } else {
@@ -56,7 +58,12 @@ const testSlice = createSlice({
             localStorage.setItem("test", JSON.stringify(state))
         },
         setTimer: (state, {payload}) => {
-            state.remaining_time--
+            if (state.secondCounter === 0){
+                state.secondCounter = 59
+                state.remaining_time--
+            } else {
+                state.secondCounter--
+            }
             // console.log(payload)
         },
         toggleStatus: (state, {payload : {status}}) => {

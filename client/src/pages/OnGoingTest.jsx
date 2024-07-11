@@ -23,17 +23,10 @@ export const loader = (store) => async({params}) => {
   
 }
 
-
-export const action = (store) => async({request, params}) => {
-  
-
-  return null
-}
-
 const OnGoingTest = () => {
   const [showNavigationModal, setShowNavigationModal] = useState(false)
   const {token} = useSelector((state) => state.user)
-  const {selectedQuestionIndex, questions, test_name, subject, remaining_time, status} = useSelector((state) => state.test)
+  const {selectedQuestionIndex, questions, test_name, subject, remaining_time, status, secondCounter} = useSelector((state) => state.test)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   // console.log(questions)
@@ -45,10 +38,10 @@ const OnGoingTest = () => {
   const toggleModal = () => setShowNavigationModal(prevState => !prevState)
 
   const handlePause = async () => {
-    console.log("pause")
+    // console.log("pause")
     
     try {
-      const resp = await customFetch.put(`/pauseexam/${questionData.test_id}`, {remaining_time: `${remaining_time}`}, {
+      const resp = await customFetch.put(`/pauseexam/${questionData.test_id}`, {remaining_time: `${remaining_time}`, second_counter: `${secondCounter}`}, {
         headers : {
           "Authorization":`Bearer ${token}`
         }
@@ -72,7 +65,7 @@ const OnGoingTest = () => {
   }
 
   const handleRestart = async() => {
-    console.log("restart")
+    // console.log("restart")
 
     try {
       const resp = await customFetch.put(`/restartexam/${questionData.test_id}`,{}, {
@@ -98,7 +91,7 @@ const OnGoingTest = () => {
   }
 
   const handleSubmit = async () => {
-    console.log("submit")
+    // console.log("submit")
 
     // loop through the questions in test redux state and push the question.id and answer when answer !== ""
     const answer_set = []
@@ -139,10 +132,10 @@ const OnGoingTest = () => {
   }
 
   useEffect(() => {
-    if (remaining_time === 0){
+    if (remaining_time === 0 && secondCounter === 0){
       handleSubmit()
     }
-  }, [remaining_time])
+  }, [secondCounter])
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col items-center justify-between">
@@ -162,7 +155,7 @@ const OnGoingTest = () => {
             <p className="text-gray-700">{subject}</p>
           </div>
           <div className="flex items-center">
-            {(status === "available" && remaining_time > 0) && <Timer />}
+            {(status === "available" && (remaining_time > 0 || secondCounter > 0)) && <Timer />}
             <button onClick={toggleModal} className="bg-blue-500 text-white font-bold py-2 px-4 ml-2 rounded hover:bg-blue-700">
               Navigate
             </button>

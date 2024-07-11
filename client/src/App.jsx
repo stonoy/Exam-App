@@ -21,7 +21,7 @@ import {loader as adminlayoutLoader} from './pages/AdminLayout'
 // actions
 import {action as registerAction} from './pages/Register'
 import {action as loginAction} from './pages/Login'
-import {action as liveTestAction} from './pages/OnGoingTest'
+// import {action as liveTestAction} from './pages/OnGoingTest'
 import { action as starttestAction} from './pages/StartTest'
 import {action as addTestAction} from './pages/AdminLanding'
 import {action as addQuestionAction} from './pages/AddQuestion'
@@ -51,7 +51,7 @@ const router = createBrowserRouter([
             {
                 path: 'livetest/:id',
                 element: <OnGoingTest/>,
-                action: liveTestAction(store),
+                // action: liveTestAction(store),
                 loader: liveTestLoader(store),
             },
             {

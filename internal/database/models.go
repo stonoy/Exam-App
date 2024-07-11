@@ -132,6 +132,7 @@ type TestUser struct {
 	Score         int32
 	RemainingTime int32
 	Status        TestUserStatus
+	SecondCounter int32
 }
 
 type User struct {

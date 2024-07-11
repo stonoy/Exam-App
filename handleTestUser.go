@@ -79,6 +79,7 @@ func (cfg *apiConfig) takeTests(w http.ResponseWriter, r *http.Request, user dat
 			Name:          test.Name,
 			Subject:       test.Subject,
 			RemainingTime: test_user.RemainingTime,
+			SecondCounter: test_user.SecondCounter,
 			Status:        string(test_user.Status),
 		},
 	})
@@ -140,6 +141,7 @@ func (cfg *apiConfig) checkTestPresent(w http.ResponseWriter, r *http.Request, u
 			Name:          test.Name,
 			Subject:       test.Subject,
 			RemainingTime: test_user.RemainingTime,
+			SecondCounter: test_user.SecondCounter,
 			Status:        string(test_user.Status),
 		},
 	})
@@ -149,6 +151,7 @@ func (cfg *apiConfig) setTestPause(w http.ResponseWriter, r *http.Request, user 
 	// get the remaining time from request
 	type reqStruct struct {
 		RemainingTime string `json:"remaining_time"`
+		SecondCounter string `json:"second_counter"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -161,6 +164,12 @@ func (cfg *apiConfig) setTestPause(w http.ResponseWriter, r *http.Request, user 
 
 	// convert remaining time to int32
 	timeInt32, err := strToInt32(reqObj.RemainingTime)
+	if err != nil {
+		respWithError(w, 400, fmt.Sprintf("Error in strToInt32 : %v", err))
+		return
+	}
+
+	timeSecInt32, err := strToInt32(reqObj.SecondCounter)
 	if err != nil {
 		respWithError(w, 400, fmt.Sprintf("Error in strToInt32 : %v", err))
 		return
@@ -190,6 +199,7 @@ func (cfg *apiConfig) setTestPause(w http.ResponseWriter, r *http.Request, user 
 	// update test_user status and remaining time when status is available
 	test_user, err := cfg.DB.PauseTestUser(r.Context(), database.PauseTestUserParams{
 		RemainingTime: timeInt32,
+		SecondCounter: timeSecInt32,
 		Status:        database.TestUserStatus("paused"),
 		Testid:        test.ID,
 		Userid:        user.ID,
@@ -264,6 +274,7 @@ func (cfg *apiConfig) setTestAvailable(w http.ResponseWriter, r *http.Request, u
 			Name:          test.Name,
 			Subject:       test.Subject,
 			RemainingTime: test_user.RemainingTime,
+			SecondCounter: test_user.SecondCounter,
 			Status:        string(test_user.Status),
 		},
 	})
@@ -333,6 +344,7 @@ func (cfg *apiConfig) submitTest(w http.ResponseWriter, r *http.Request, user da
 	// update test user
 	test_user, err := cfg.DB.SubmitTestAndUpdate(r.Context(), database.SubmitTestAndUpdateParams{
 		RemainingTime: 0,
+		SecondCounter: 0,
 		Status:        database.TestUserStatus("completed"),
 		Score:         final_score,
 		Testid:        test.ID,

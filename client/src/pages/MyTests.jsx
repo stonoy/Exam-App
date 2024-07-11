@@ -31,7 +31,7 @@ export const loader = (store) => async () => {
 const MyTests = () => {
   const {my_tests} = useLoaderData()
 
-  console.log(my_tests)
+  // console.log(my_tests)
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">

@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setTimer } from '../feature/test/testSlice'
 
 const Timer = () => {
-    const {remaining_time} = useSelector((state) => state.test)
+    // const [second, setSecond] = useState(60)
+    const {remaining_time, secondCounter} = useSelector((state) => state.test)
     const dispatch = useDispatch()
 
     useEffect(()=>{
         const intId = setInterval(()=> {
-            console.log(remaining_time)
+            // console.log(remaining_time)
             dispatch(setTimer())
         },1000)
 
@@ -19,7 +20,7 @@ const Timer = () => {
 
   return (
     <div>
-        <span className="text-gray-700 font-bold">{remaining_time} minutes remaining</span>
+        <span className="text-gray-700 font-bold">{remaining_time}:{secondCounter} minutes remaining</span>
     </div>
   )
 }

@@ -34,6 +34,7 @@ type Test_User_Pre struct {
 	Name          string    `json:"name"`
 	Subject       string    `json:"subject"`
 	RemainingTime int32     `json:"remaining_time"`
+	SecondCounter int32     `json:"second_counter"`
 	Status        string    `json:"status"`
 }
 

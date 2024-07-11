@@ -6,7 +6,7 @@ const Question = ({questionData}) => {
   const dispatch = useDispatch()
     
 const handleAnswer = (e) => {
-  console.log(e.target.value, questionData.id)
+  // console.log(e.target.value, questionData.id)
   dispatch(setAnswer({questionId : questionData.id, givenAnswer : e.target.value}))
 }
     

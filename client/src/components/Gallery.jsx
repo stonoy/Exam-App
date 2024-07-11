@@ -10,7 +10,7 @@ const Gallery = ({ allTests, admin }) => {
             <h3 className="text-xl font-bold mb-2">{test.name}</h3>
             <p className="text-gray-700 mb-1"><strong>Description:</strong> {test.description}</p>
             <p className="text-gray-700 mb-1"><strong>Subject:</strong> {test.subject}</p>
-            <p className="text-gray-700 mb-1"><strong>Duration:</strong> {test.duration} minutes</p>
+            <p className="text-gray-700 mb-1"><strong>Duration:</strong> {test.duration +1} minutes</p>
             <p className="text-gray-700 mb-1"><strong>Total Participants:</strong> {test.total_participents}</p>
             <p className="text-gray-700 mb-1"><strong>Max Score:</strong> {test.max_score}</p>
             <p className="text-gray-700 mb-1"><strong>Avg Score:</strong> {test.avg_score}</p>

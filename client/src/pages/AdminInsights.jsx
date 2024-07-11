@@ -2,7 +2,7 @@ import React from 'react'
 
 const AdminInsights = () => {
   return (
-    <div>AdminInsights</div>
+    <div>AdminInsights... yet to come</div>
   )
 }
 
