@@ -2,9 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"embed"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -13,10 +16,34 @@ import (
 	"github.com/stonoy/Exam-App/internal/database"
 )
 
+//go:embed client/dist/*
+var staticFiles embed.FS
+
 type apiConfig struct {
 	hits       int
 	Jwt_Secret string
 	DB         *database.Queries
+}
+
+func (cfg *apiConfig) countTheHits(fileServer http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		// I want to serve the fileserver root directory for request with any url path except those js,css and png files
+
+		if !strings.HasSuffix(r.URL.Path, ".js") && !strings.HasSuffix(r.URL.Path, ".css") && !strings.HasSuffix(r.URL.Path, ".png") && !strings.HasSuffix(r.URL.Path, ".svg") {
+			r.URL.Path = "/"
+			cfg.hits++
+		}
+
+		fileServer.ServeHTTP(w, r)
+	})
+}
+
+func (cfg *apiConfig) clientHandler() http.Handler {
+	fsys := fs.FS(staticFiles)
+	contentStatic, _ := fs.Sub(fsys, "client/dist")
+	return cfg.countTheHits(http.FileServer(http.FS(contentStatic)))
+
 }
 
 func main() {
@@ -74,10 +101,6 @@ func main() {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	mainRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome!"))
-	})
-
 	// make a sub router for api
 	apiRouter := chi.NewRouter()
 
@@ -109,6 +132,9 @@ func main() {
 
 	// mount it on main router
 	mainRouter.Mount("/api/v1", apiRouter)
+
+	// provides client
+	mainRouter.Handle("/*", apiCfg.clientHandler())
 
 	// configure the server struct
 	server := &http.Server{

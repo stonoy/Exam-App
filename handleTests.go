@@ -118,6 +118,8 @@ func (cfg *apiConfig) getAllTests(w http.ResponseWriter, r *http.Request) {
 	var limit int32 = 2
 	offset := limit * (pageInt - 1)
 
+	// log.Println(name, subject, limit, offset)
+
 	// get the filtered tests
 	tests, err := cfg.DB.GetAllTests(r.Context(), database.GetAllTestsParams{
 		Name:    name,
