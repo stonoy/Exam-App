@@ -55,4 +55,4 @@ jobs:
         run: docker push gcr.io/exam1-429207/exam1-ar-repo/exam1:latest
 
       - name: Deploy to Cloud Run
-        run: gcloud run deploy pricetracker --image gcr.io/exam1-429207/exam1-ar-repo/exam1:latest --region us-central1 --allow-unauthenticated --project exam1-429207 --max-instances=4
+        run: gcloud run deploy exam1 --image gcr.io/exam1-429207/exam1-ar-repo/exam1:latest --region us-central1 --allow-unauthenticated --project exam1-429207 --max-instances=4

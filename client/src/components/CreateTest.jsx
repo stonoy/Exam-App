@@ -2,7 +2,7 @@ import React from 'react'
 import { Form } from 'react-router-dom'
 import AdminInput from './AdminInput'
 
-const CreateTest = () => {
+const CreateTest = ({isSubmitting}) => {
   return (
     <div className="max-w-3xl my-8 mx-auto bg-slate-300 p-6 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold mb-6">Creat Test</h2>
@@ -23,8 +23,13 @@ const CreateTest = () => {
         <div className="mt-6">
           <button
             type="submit"
+            disabled={isSubmitting}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           >
+                    {/* Loading spinner */}
+        {isSubmitting && (
+          <FaSpinner className="animate-spin mr-2" /> // Add animate-spin class for animation
+        )}
             Create
           </button>
         </div>

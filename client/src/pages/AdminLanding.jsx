@@ -26,6 +26,7 @@ export const action = (store) => async ({request}) => {
     const formData = await request.formData()
     const data = Object.fromEntries(formData)
     const token = store.getState().user.token
+    const isSubmitting = navigation.state == "submitting"
 
     try {
       const resp = await customFetch.post('/createtest', data, {
@@ -60,7 +61,7 @@ const AdminLanding = () => {
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       {/* Filter Section */}
       
-      <CreateTest />
+      <CreateTest isSubmitting={isSubmitting}/>
 
       <Gallery allTests={allTests} admin={true}/>
 
