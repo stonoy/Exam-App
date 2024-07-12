@@ -144,5 +144,6 @@ func main() {
 
 	log.Printf("Server is listening on port %v", port)
 
+	// listening request/response forever
 	log.Fatal(server.ListenAndServe())
 }
