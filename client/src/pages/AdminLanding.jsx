@@ -1,6 +1,6 @@
 import React from 'react'
 import { CreateTest, Gallery, Pagination } from '../components'
-import { redirect, useLoaderData } from 'react-router-dom'
+import { redirect, useLoaderData, useNavigation } from 'react-router-dom'
 import { customFetch, getQueryReadyUrl } from '../utils'
 import { toast } from 'react-toastify'
 
@@ -26,7 +26,7 @@ export const action = (store) => async ({request}) => {
     const formData = await request.formData()
     const data = Object.fromEntries(formData)
     const token = store.getState().user.token
-    const isSubmitting = navigation.state == "submitting"
+    
 
     try {
       const resp = await customFetch.post('/createtest', data, {
@@ -54,6 +54,8 @@ export const action = (store) => async ({request}) => {
 
 const AdminLanding = () => {
     const {allTests, numOfPages, page} = useLoaderData()
+    const navigation = useNavigation()
+    const isSubmitting = navigation.state == "submitting"
     // const data = useLoaderData()
 
   return (

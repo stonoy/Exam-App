@@ -25,6 +25,7 @@ export const loader = (store) => async({params}) => {
 
 const OnGoingTest = () => {
   const [showNavigationModal, setShowNavigationModal] = useState(false)
+  const [btnBusy, setBtnBusy] = useState(false)
   const {token} = useSelector((state) => state.user)
   const {selectedQuestionIndex, questions, test_name, subject, remaining_time, status, secondCounter} = useSelector((state) => state.test)
   const dispatch = useDispatch()
@@ -39,6 +40,7 @@ const OnGoingTest = () => {
 
   const handlePause = async () => {
     // console.log("pause")
+    setBtnBusy(prev => !prev)
     
     try {
       const resp = await customFetch.put(`/pauseexam/${questionData.test_id}`, {remaining_time: `${remaining_time}`, second_counter: `${secondCounter}`}, {
@@ -58,14 +60,14 @@ const OnGoingTest = () => {
         navigate("/login")
       }else {
         toast.error(errMsg)
-      }
-
-      
+      }    
     }
+    setBtnBusy(prev => !prev)
   }
 
   const handleRestart = async() => {
     // console.log("restart")
+    setBtnBusy(prev => !prev)
 
     try {
       const resp = await customFetch.put(`/restartexam/${questionData.test_id}`,{}, {
@@ -88,10 +90,12 @@ const OnGoingTest = () => {
         toast.error(errMsg)
       }
     }
+    setBtnBusy(prev => !prev)
   }
 
   const handleSubmit = async () => {
     // console.log("submit")
+    setBtnBusy(prev => !prev)
 
     // loop through the questions in test redux state and push the question.id and answer when answer !== ""
     const answer_set = []
@@ -128,7 +132,7 @@ const OnGoingTest = () => {
         navigate("/")
       }
     }
-    
+    setBtnBusy(prev => !prev)
   }
 
   useEffect(() => {
@@ -143,10 +147,10 @@ const OnGoingTest = () => {
         {/* Pause, Submit buttons, Test Name, Subject Name, and Navigate button on top */}
         <div className="flex justify-between items-center mb-4">
           <div>
-            <button onClick={handlePause} className="bg-yellow-500 text-white font-bold py-2 px-4 rounded hover:bg-yellow-700">
+            <button onClick={handlePause} disabled={btnBusy} className="bg-yellow-500 text-white font-bold py-2 px-4 rounded hover:bg-yellow-700">
               Pause
             </button>
-            <button onClick={handleSubmit} className="bg-green-500 text-white font-bold py-2 px-4 ml-2 rounded hover:bg-green-700">
+            <button onClick={handleSubmit} disabled={btnBusy} className="bg-green-500 text-white font-bold py-2 px-4 ml-2 rounded hover:bg-green-700">
               Submit
             </button>
           </div>
@@ -182,7 +186,7 @@ const OnGoingTest = () => {
         </div>
 
         {/* Pause Modal */}
-        {status === "paused" && <RestartModal handleRestart={handleRestart} />}
+        {status === "paused" && <RestartModal handleRestart={handleRestart} btnBusy={btnBusy}/>}
 
         {/* QuestionNavigationModal */}
         {showNavigationModal && <QuestionNavigationModal questions={questions} toggleModal={toggleModal} />}

@@ -1,8 +1,9 @@
 import React from 'react'
 import { AdminInput } from '../components'
-import { Form, redirect, useParams } from 'react-router-dom'
+import { Form, redirect, useNavigation, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { customFetch } from '../utils'
+import { FaSpinner } from 'react-icons/fa'
 
 export const action = (store) => async ({request}) => {
   const formData = await request.formData()
@@ -35,6 +36,8 @@ export const action = (store) => async ({request}) => {
 
 const AddQuestion = () => {
   const {id} = useParams()
+  const navigation = useNavigation()
+    const isSubmitting = navigation.state == "submitting"
   return (
     <div className="max-w-3xl mt-8 mx-auto bg-slate-300 p-6 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold mb-6">Creat Test</h2>
@@ -66,8 +69,13 @@ const AddQuestion = () => {
         <div className="mt-6">
           <button
             type="submit"
+            disabled={isSubmitting}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           >
+             {/* Loading spinner */}
+        {isSubmitting && (
+          <FaSpinner className="animate-spin mr-2" /> // Add animate-spin class for animation
+        )}
             Create
           </button>
         </div>
