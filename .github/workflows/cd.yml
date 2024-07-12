@@ -40,7 +40,7 @@ jobs:
       - name: Run DB migrations
         run: ./scripts/migrateup.sh
         env:
-          DB_CONN: ${{ secrets.DB_CONN }}
+          DB_URI: ${{ secrets.DB_URI }}
 
       - name: Set up Google Cloud
         uses: google-github-actions/setup-gcloud@v0.2.0
