@@ -1,7 +1,7 @@
 import React from 'react';
 import {Form, Link} from 'react-router-dom'
 
-const Gallery = ({ allTests, admin }) => {
+const Gallery = ({ allTests, admin, isSubmitting }) => {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {allTests.map((test) => (
@@ -17,7 +17,7 @@ const Gallery = ({ allTests, admin }) => {
             {admin ? 
             <div className='flex flex-row justify-between'>
               <Form method='delete' action={`./deletetest/${test.id}`}>
-                <button className="mt-4 inline-block bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600">
+                <button disabled={isSubmitting} className="mt-4 inline-block bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600">
                   Delete
                 </button>
               </Form>

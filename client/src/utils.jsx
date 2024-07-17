@@ -23,12 +23,13 @@ export const getQueryReadyUrl = (apiPath, request) => {
 
 export const statusOptions = ['available', 'paused', 'completed']
 
-export const provideStartExamBtn = (is_present, status) => {
+export const provideStartExamBtn = (is_present, status, isSubmitting) => {
     if (!is_present){
         return (
             <button
             name='intent'
             value='not_present'
+            disabled={isSubmitting}
             className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
             >
                 Start Test
@@ -41,6 +42,7 @@ export const provideStartExamBtn = (is_present, status) => {
             <button
             name='intent'
             value='available'
+            disabled={isSubmitting}
             className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
             >
                 Go To Test
@@ -53,6 +55,7 @@ export const provideStartExamBtn = (is_present, status) => {
             <button
             name='intent'
             value='paused'
+            disabled={isSubmitting}
             className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
             >
                 Resume Test
@@ -65,6 +68,7 @@ export const provideStartExamBtn = (is_present, status) => {
             <button
             name='intent'
             value='completed'
+            disabled={isSubmitting}
             className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
             >
                 Check Result

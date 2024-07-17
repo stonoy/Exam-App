@@ -65,7 +65,7 @@ const AdminLanding = () => {
       
       <CreateTest isSubmitting={isSubmitting}/>
 
-      <Gallery allTests={allTests} admin={true}/>
+      <Gallery allTests={allTests} admin={true} isSubmitting={isSubmitting}/>
 
       {/* Pagination */}
       <Pagination numOfPages={numOfPages} page={page} />

@@ -1,7 +1,7 @@
 import React from 'react'
 import { customFetch, provideStartExamBtn } from '../utils'
 import { toast } from 'react-toastify'
-import { Form, redirect, useLoaderData, useParams } from 'react-router-dom'
+import { Form, redirect, useLoaderData, useNavigation, useParams } from 'react-router-dom'
 import { setTestDetails } from '../feature/test/testSlice'
 
 export const loader = (store) => async({params}) => {
@@ -46,6 +46,8 @@ export const loader = (store) => async({params}) => {
 const SingleTest = () => {
   const {is_present, test_taken_info : {status}} = useLoaderData()
   const {id} = useParams()
+  const navigation = useNavigation()
+  const isSubmitting = navigation.state === "submitting"
   
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
@@ -60,7 +62,7 @@ const SingleTest = () => {
         <li>If you face any issues, contact support immediately.</li>
       </ul>
       <Form method='post' action={`/starttest/${id}`}>
-        {provideStartExamBtn(is_present, status)}
+        {provideStartExamBtn(is_present, status, isSubmitting)}
       </Form>
     </div>
   )

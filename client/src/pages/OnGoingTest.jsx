@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { customFetch } from '../utils'
 import { toast } from 'react-toastify'
 import { useLoaderData, useNavigate } from 'react-router-dom'
-import { changeQuestion, deSelectAnswer, setQuestions, setTag, setTestDetails, showResult, toggleStatus } from '../feature/test/testSlice'
-import { Question, QuestionNavigationModal, RestartModal, Timer } from '../components'
+import { changeQuestion, deSelectAnswer, pauseTest, restartTest, setQuestions, setTag, setTestDetails, showResult, toggleStatus } from '../feature/test/testSlice'
+import { Loader, Question, QuestionNavigationModal, RestartModal, Timer } from '../components'
 import { useDispatch, useSelector } from 'react-redux'
 
 export const loader = (store) => async({params}) => {
@@ -25,9 +25,9 @@ export const loader = (store) => async({params}) => {
 
 const OnGoingTest = () => {
   const [showNavigationModal, setShowNavigationModal] = useState(false)
-  const [btnBusy, setBtnBusy] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const {token} = useSelector((state) => state.user)
-  const {selectedQuestionIndex, questions, test_name, subject, remaining_time, status, secondCounter} = useSelector((state) => state.test)
+  const {selectedQuestionIndex, questions, test_name, subject, remaining_time, status, secondCounter, success, anyError, authError, btnBusy} = useSelector((state) => state.test)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   // console.log(questions)
@@ -38,64 +38,37 @@ const OnGoingTest = () => {
 
   const toggleModal = () => setShowNavigationModal(prevState => !prevState)
 
-  const handlePause = async () => {
-    // console.log("pause")
-    setBtnBusy(prev => !prev)
-    
-    try {
-      const resp = await customFetch.put(`/pauseexam/${questionData.test_id}`, {remaining_time: `${remaining_time}`, second_counter: `${secondCounter}`}, {
-        headers : {
-          "Authorization":`Bearer ${token}`
-        }
-      })
-      dispatch(toggleStatus({status:"paused"}))
-      toast.success(resp?.data)
-    } catch (error) {
-      const errMsg = error?.response?.data?.msg || "Error in pausing test"
-
-      const status = error?.response?.status
-
-      if (status === 401 || status === 403){
-        toast.warn("Login To Proceed")
-        navigate("/login")
-      }else {
-        toast.error(errMsg)
-      }    
+  useEffect(()=>{
+    if (anyError){
+      navigate("/")
     }
-    setBtnBusy(prev => !prev)
+    if (authError){
+      navigate("/login")
+    }
+
+  },[anyError, authError, navigate])
+
+  useEffect(() => {
+    if (remaining_time === 0 && secondCounter === 0){
+      handleSubmit()
+    }
+  }, [secondCounter])
+
+  const handlePause = () => {
+    // console.log("pause")
+
+    dispatch(pauseTest(questionData.test_id))
   }
 
-  const handleRestart = async() => {
+  const handleRestart = () => {
     // console.log("restart")
-    setBtnBusy(prev => !prev)
 
-    try {
-      const resp = await customFetch.put(`/restartexam/${questionData.test_id}`,{}, {
-        headers : {
-            "Authorization" : `Bearer ${token}`
-        }
-    })
-
-    dispatch(setTestDetails(resp?.data))
-    toast.success("Test Restarted!")
-    } catch (error) {
-      const errMsg = error?.response?.data?.msg || "Error in restarting test"
-
-      const status = error?.response?.status
-
-      if (status === 401 || status === 403){
-        toast.warn("Login To Proceed")
-        navigate("/login")
-      }else {
-        toast.error(errMsg)
-      }
-    }
-    setBtnBusy(prev => !prev)
+    dispatch(restartTest(questionData.test_id))
   }
 
   const handleSubmit = async () => {
     // console.log("submit")
-    setBtnBusy(prev => !prev)
+    setIsSubmitting(prev => !prev)
 
     // loop through the questions in test redux state and push the question.id and answer when answer !== ""
     const answer_set = []
@@ -132,14 +105,14 @@ const OnGoingTest = () => {
         navigate("/")
       }
     }
-    setBtnBusy(prev => !prev)
+    setIsSubmitting(prev => !prev)
   }
 
-  useEffect(() => {
-    if (remaining_time === 0 && secondCounter === 0){
-      handleSubmit()
-    }
-  }, [secondCounter])
+  if (isSubmitting) {
+    return (
+      <Loader/>
+    )
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col items-center justify-between">
@@ -196,3 +169,61 @@ const OnGoingTest = () => {
 }
 
 export default OnGoingTest
+
+
+// extra
+
+// const handlePause = async () => {
+//   // console.log("pause")
+//   setBtnBusy(prev => !prev)
+  
+//   try {
+//     const resp = await customFetch.put(`/pauseexam/${questionData.test_id}`, {remaining_time: `${remaining_time}`, second_counter: `${secondCounter}`}, {
+//       headers : {
+//         "Authorization":`Bearer ${token}`
+//       }
+//     })
+//     dispatch(toggleStatus({status:"paused"}))
+//     toast.success(resp?.data)
+//   } catch (error) {
+//     const errMsg = error?.response?.data?.msg || "Error in pausing test"
+
+//     const status = error?.response?.status
+
+//     if (status === 401 || status === 403){
+//       toast.warn("Login To Proceed")
+//       navigate("/login")
+//     }else {
+//       toast.error(errMsg)
+//     }    
+//   }
+//   setBtnBusy(prev => !prev)
+// }
+
+// const handleRestart = async() => {
+//   // console.log("restart")
+//   setBtnBusy(prev => !prev)
+
+//   try {
+//     const resp = await customFetch.put(`/restartexam/${questionData.test_id}`,{}, {
+//       headers : {
+//           "Authorization" : `Bearer ${token}`
+//       }
+//   })
+
+//   dispatch(setTestDetails(resp?.data))
+//   toast.success("Test Restarted!")
+//   } catch (error) {
+//     const errMsg = error?.response?.data?.msg || "Error in restarting test"
+
+//     const status = error?.response?.status
+
+//     if (status === 401 || status === 403){
+//       toast.warn("Login To Proceed")
+//       navigate("/login")
+//     }else {
+//       toast.error(errMsg)
+//     }
+//   }
+//   setBtnBusy(prev => !prev)
+// }
